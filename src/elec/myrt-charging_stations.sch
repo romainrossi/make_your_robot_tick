@@ -22,7 +22,12 @@ F 0 "P7" V 4750 4600 40  0000 C CNN
 F 1 "IN" V 4850 4600 40  0000 C CNN
 F 2 "Connector_Phoenix_MC:PhoenixContact_MCV_1,5_2-G-3.5_1x02_P3.50mm_Vertical" H 4800 4600 60  0001 C CNN
 F 3 "" H 4800 4600 60  0001 C CNN
-F 4 "Stock" H 0   0   50  0001 C CNN "Vendor"
+F 4 "Farnell" H 0   0   50  0001 C CNN "Vendor"
+F 5 "Phoenix Contact" H 0   0   50  0001 C CNN "Manufacturer"
+F 6 "3704816" H 0   0   50  0001 C CNN "Order Code"
+F 7 "0,694 €" H 0   0   50  0001 C CNN "Price"
+F 8 "1843606" H 0   0   50  0001 C CNN "Product Code"
+F 9 "https://fr.farnell.com/phoenix-contact/1843606/embase-male-verticalee-ci-2v-3/dp/3704816" H 0   0   50  0001 C CNN "Vendor URL"
 	1    4800 4600
 	-1   0    0    -1  
 $EndComp
@@ -67,7 +72,7 @@ U 1 1 591C8302
 P 6850 4500
 F 0 "R7" V 6930 4500 50  0000 C CNN
 F 1 "100Ω 1% 1W" V 6750 4500 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_Power_L75.0mm_W9.0mm_P86.36mm" V 6780 4500 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0516_L15.5mm_D5.0mm_P25.40mm_Horizontal" V 6780 4500 50  0001 C CNN
 F 3 "" H 6850 4500 50  0001 C CNN
 F 4 "Vishay" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "2419015" H 0   0   50  0001 C CNN "Order Code"
@@ -86,7 +91,7 @@ U 1 1 591C834C
 P 5500 4250
 F 0 "R4" V 5580 4250 50  0000 C CNN
 F 1 "470" V 5500 4250 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5430 4250 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5430 4250 50  0001 C CNN
 F 3 "" H 5500 4250 50  0001 C CNN
 F 4 "Generic" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "Stock" H 0   0   50  0001 C CNN "Vendor"
@@ -114,7 +119,12 @@ F 0 "P6" V 4750 2450 40  0000 C CNN
 F 1 "IN" V 4850 2450 40  0000 C CNN
 F 2 "Connector_Phoenix_MC:PhoenixContact_MCV_1,5_2-G-3.5_1x02_P3.50mm_Vertical" H 4800 2450 60  0001 C CNN
 F 3 "" H 4800 2450 60  0001 C CNN
-F 4 "Stock" H 0   0   50  0001 C CNN "Vendor"
+F 4 "Farnell" H 0   0   50  0001 C CNN "Vendor"
+F 5 "Phoenix Contact" H 0   0   50  0001 C CNN "Manufacturer"
+F 6 "3704816" H 0   0   50  0001 C CNN "Order Code"
+F 7 "0,694 €" H 0   0   50  0001 C CNN "Price"
+F 8 "1843606" H 0   0   50  0001 C CNN "Product Code"
+F 9 "https://fr.farnell.com/phoenix-contact/1843606/embase-male-verticalee-ci-2v-3/dp/3704816" H 0   0   50  0001 C CNN "Vendor URL"
 	1    4800 2450
 	-1   0    0    -1  
 $EndComp
@@ -159,7 +169,7 @@ U 1 1 591C92B3
 P 6850 2350
 F 0 "R6" V 6930 2350 50  0000 C CNN
 F 1 "500Ω 1% 0.1W" V 6750 2350 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_Power_L75.0mm_W9.0mm_P86.36mm" V 6780 2350 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P15.24mm_Horizontal" V 6780 2350 50  0001 C CNN
 F 3 "" H 6850 2350 50  0001 C CNN
 F 4 "Multicomp" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "2396013" H 0   0   50  0001 C CNN "Order Code"
@@ -178,7 +188,7 @@ U 1 1 591C92BA
 P 5500 2100
 F 0 "R3" V 5580 2100 50  0000 C CNN
 F 1 "470" V 5500 2100 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5430 2100 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5430 2100 50  0001 C CNN
 F 3 "" H 5500 2100 50  0001 C CNN
 F 4 "Generic" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "Stock" H 0   0   50  0001 C CNN "Vendor"
@@ -208,7 +218,12 @@ F 0 "P8" V 4750 5700 40  0000 C CNN
 F 1 "IN" V 4850 5700 40  0000 C CNN
 F 2 "Connector_Phoenix_MC:PhoenixContact_MCV_1,5_2-G-3.5_1x02_P3.50mm_Vertical" H 4800 5700 60  0001 C CNN
 F 3 "" H 4800 5700 60  0001 C CNN
-F 4 "Stock" H 0   0   50  0001 C CNN "Vendor"
+F 4 "Farnell" H 0   0   50  0001 C CNN "Vendor"
+F 5 "Phoenix Contact" H 0   0   50  0001 C CNN "Manufacturer"
+F 6 "3704816" H 0   0   50  0001 C CNN "Order Code"
+F 7 "0,694 €" H 0   0   50  0001 C CNN "Price"
+F 8 "1843606" H 0   0   50  0001 C CNN "Product Code"
+F 9 "https://fr.farnell.com/phoenix-contact/1843606/embase-male-verticalee-ci-2v-3/dp/3704816" H 0   0   50  0001 C CNN "Vendor URL"
 	1    4800 5700
 	-1   0    0    -1  
 $EndComp
@@ -251,7 +266,7 @@ U 1 1 591C989D
 P 6850 5600
 F 0 "R8" V 6930 5600 50  0000 C CNN
 F 1 "33Ω 1% 3W" V 6750 5600 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_Power_L75.0mm_W9.0mm_P86.36mm" V 6780 5600 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0614_L14.3mm_D5.7mm_P25.40mm_Horizontal" V 6780 5600 50  0001 C CNN
 F 3 "" H 6850 5600 50  0001 C CNN
 F 4 "Ohmite" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "2448938" H 0   0   50  0001 C CNN "Order Code"
@@ -270,7 +285,7 @@ U 1 1 591C98A4
 P 5500 5350
 F 0 "R5" V 5580 5350 50  0000 C CNN
 F 1 "470" V 5500 5350 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5430 5350 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5430 5350 50  0001 C CNN
 F 3 "" H 5500 5350 50  0001 C CNN
 F 4 "Generic" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "Stock" H 0   0   50  0001 C CNN "Vendor"
@@ -313,7 +328,12 @@ F 0 "P3" V 4750 3500 40  0000 C CNN
 F 1 "IN" V 4850 3500 40  0000 C CNN
 F 2 "Connector_Phoenix_MC:PhoenixContact_MCV_1,5_2-G-3.5_1x02_P3.50mm_Vertical" H 4800 3500 60  0001 C CNN
 F 3 "" H 4800 3500 60  0001 C CNN
-F 4 "Stock" H 0   0   50  0001 C CNN "Vendor"
+F 4 "Farnell" H 0   0   50  0001 C CNN "Vendor"
+F 5 "Phoenix Contact" H 0   0   50  0001 C CNN "Manufacturer"
+F 6 "3704816" H 0   0   50  0001 C CNN "Order Code"
+F 7 "0,694 €" H 0   0   50  0001 C CNN "Price"
+F 8 "1843606" H 0   0   50  0001 C CNN "Product Code"
+F 9 "https://fr.farnell.com/phoenix-contact/1843606/embase-male-verticalee-ci-2v-3/dp/3704816" H 0   0   50  0001 C CNN "Vendor URL"
 	1    4800 3500
 	-1   0    0    -1  
 $EndComp
@@ -356,7 +376,7 @@ U 1 1 5BAAA441
 P 6850 3400
 F 0 "R10" V 6930 3400 50  0000 C CNN
 F 1 "500Ω 1% 0.1W" V 6750 3400 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_Power_L75.0mm_W9.0mm_P86.36mm" V 6780 3400 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P15.24mm_Horizontal" V 6780 3400 50  0001 C CNN
 F 3 "" H 6850 3400 50  0001 C CNN
 F 4 "Multicomp" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "2396013" H 0   0   50  0001 C CNN "Order Code"
@@ -375,7 +395,7 @@ U 1 1 5BAAA449
 P 5500 3150
 F 0 "R9" V 5580 3150 50  0000 C CNN
 F 1 "470" V 5500 3150 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5430 3150 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5430 3150 50  0001 C CNN
 F 3 "" H 5500 3150 50  0001 C CNN
 F 4 "Generic" H 0   0   50  0001 C CNN "Manufacturer"
 F 5 "Stock" H 0   0   50  0001 C CNN "Vendor"
