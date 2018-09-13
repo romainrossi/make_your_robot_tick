@@ -33,10 +33,19 @@ typedef enum states_e {
 typedef struct globals_s {
   states current_state;
   uint16_t score;
-  uint32_t current_time;
+  uint32_t current_match_time_ms;
 } data;
 
 // Constants
+const float score_calib_multiplier = 0.0001;
+
+
+const uint32_t time_slot_duration_ms = 15000; // 15 s = 15000 ms
+// State (ON=1, OFF=0) of sources at each time slot, MSB is the beginning of the match
+const uint32_t regular_source_activation_slots      = 0b11110000111100001111000000000000;
+const uint32_t accelerated_source_activation_slots  = 0b00010001000100010001000000000000;
+const uint32_t fast_source_activation_slots         = 0b00000100010001000000000000000000;
+
 
 // Variables
 data Data;
@@ -45,9 +54,11 @@ SoftwareSerial led_display(0, PIN_OUT_DISPLAY_UART);
 // Prototypes
 void update_display(void);
 void read_energy(void);
+void update_source_activation(void);
 
 // Core
-void setup() {
+void setup()
+{
   Data.current_state = STATE_RESET;
   Data.score = 0;
 
@@ -106,10 +117,13 @@ void setup() {
 
 }
 
-void loop() {
+void loop()
+{
+  Data.current_match_time_ms = millis();
   update_display();
   read_energy();
-  delay(1000);
+  update_source_activation();
+  delay(100);
 }
 
 void update_display(void)
@@ -117,22 +131,49 @@ void update_display(void)
   static uint16_t previous_score = -1;
   if ( Data.score != previous_score ) {
     previous_score = Data.score;
-    led_display.write(0x76);
-    if ( previous_score < 1000 )
-      led_display.write("0");
-    if ( previous_score < 100 )
-      led_display.write("0");
-    if ( previous_score < 10 )
-      led_display.write("0");
-    led_display.print(Data.score);
+    if ( previous_score <= 9999 ){
+      if ( previous_score < 1000 )
+        led_display.write("0");
+      if ( previous_score < 100 )
+        led_display.write("0");
+      if ( previous_score < 10 )
+        led_display.write("0");
+      led_display.print(Data.score);
+    } else {
+      led_display.print("OUFL");
+    }
   }
 }
 
-void read_energy(void)
+void read_energy(void) // 500 pts pour Fast; 250 pour medium; 66 pour regular
 {
   static uint32_t last_read_time = 0;
   uint32_t read_time = millis();
+  float adc_read = analogRead(PIN_IN_CURRENT_SENSE);
 
-  uint16_t adc_read = analogRead(PIN_IN_CURRENT_SENSE);
-  Data.score = adc_read;
+  float delta_t = read_time - last_read_time;
+  float new_points = adc_read * delta_t * score_calib_multiplier;
+
+  Data.score += (uint16_t)round(new_points);
+  last_read_time = read_time;
+}
+
+void update_source_activation(void)
+{
+  uint8_t current_match_time_slot = Data.current_match_time_ms / time_slot_duration_ms;
+  uint8_t regular1_state = (regular_source_activation_slots << current_match_time_slot) >> 31;
+  uint8_t regular2_state = regular1_state;
+  uint8_t accelerated_state = (accelerated_source_activation_slots << current_match_time_slot) >> 31;
+  uint8_t fast_state = (fast_source_activation_slots << current_match_time_slot) >> 31;
+
+  // Update GPIO
+  digitalWrite(PIN_OUT_SRC_REGULAR1, regular1_state);
+  digitalWrite(PIN_OUT_SRC_REGULAR2, regular2_state);
+  digitalWrite(PIN_OUT_SRC_ACCELERATED, accelerated_state);
+  digitalWrite(PIN_OUT_SRC_FAST, fast_state);
+
+  // Print sources states on the display using decimal points
+  led_display.write(0x77);
+  uint8_t display_dots = (fast_state << 3) | (accelerated_state << 2) | (regular2_state << 1) | (regular1_state << 0);
+  led_display.write(display_dots);
 }
