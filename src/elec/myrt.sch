@@ -460,22 +460,6 @@ Wire Wire Line
 Wire Wire Line
 	1450 6750 1300 6750
 Connection ~ 2200 6550
-$Comp
-L myrt-rescue:C C1
-U 1 1 5B461EE5
-P 2500 6700
-F 0 "C1" H 2525 6800 50  0000 L CNN
-F 1 "10uF" H 2525 6600 50  0000 L CNN
-F 2 "Capacitor_THT:C_Rect_L26.5mm_W8.5mm_P22.50mm_MKS4" H 2538 6550 50  0001 C CNN
-F 3 "" H 2500 6700 50  0000 C CNN
-F 4 "No polarity" H 2500 6700 60  0001 C CNN "Note"
-F 5 "Generic" H -3300 1000 50  0001 C CNN "Manufacturer"
-F 6 "Stock" H -3300 1000 50  0001 C CNN "Vendor"
-	1    2500 6700
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2500 6900 2500 6850
 Connection ~ 2200 6900
 $Comp
 L myrt-rescue:D D1
@@ -506,7 +490,6 @@ $EndComp
 Wire Wire Line
 	3300 6500 3300 6550
 Connection ~ 3300 6550
-Connection ~ 2500 6900
 $Comp
 L power:+5V #PWR021
 U 1 1 5B4629E1
@@ -534,8 +517,6 @@ Wire Wire Line
 	5950 2050 5950 2150
 Wire Wire Line
 	5950 1350 5950 1500
-Wire Wire Line
-	2200 6900 2500 6900
 Wire Wire Line
 	3300 6550 3300 6600
 Wire Wire Line
@@ -711,13 +692,6 @@ Wire Wire Line
 Connection ~ 2150 6550
 Wire Wire Line
 	2150 6550 2200 6550
-Connection ~ 2500 6550
-Wire Wire Line
-	2200 6550 2500 6550
-Wire Wire Line
-	2500 6900 3300 6900
-Wire Wire Line
-	2500 6550 3300 6550
 $Comp
 L Device:R R12
 U 1 1 5B86B601
@@ -1123,4 +1097,8 @@ Wire Notes Line
 Wire Wire Line
 	6200 3050 6450 3050
 NoConn ~ 4800 3050
+Wire Wire Line
+	2200 6550 3300 6550
+Wire Wire Line
+	2200 6900 3300 6900
 $EndSCHEMATC
