@@ -23,7 +23,10 @@ typedef enum pins_e {
 
 typedef enum states_e {
   STATE_INIT,
-  STATE_SETUP,
+  STATE_SETUP_INIT,
+  STATE_SETUP_LOAD,
+  STATE_SETUP_COUNT,
+  STATE_SETUP_END,
   STATE_READY,
   STATE_RUNNING,
   STATE_FINISHED
@@ -45,10 +48,13 @@ const uint32_t regular_source_activation_slots      = 0b111100001111000011110000
 const uint32_t accelerated_source_activation_slots  = 0b00010001000100010001000000000000;
 const uint32_t fast_source_activation_slots         = 0b00000100010001000000000000000000;
 
+const uint32_t setup_load_time_ms = time_slot_duration_ms * 3ul; // nb of fast_source_activation_slots ON
+const uint32_t setup_max_score = 500;
 
 // Variables
 data Data;
 SoftwareSerial led_display(0, PIN_OUT_DISPLAY_UART);
+uint32_t setup_load_start_ms;
 
 // Prototypes
 void display_score(bool force = false);
@@ -62,11 +68,14 @@ void update_match_timer(void);
 bool is_match_finished(void);
 
 void init_to_ready(void);
-void init_to_setup(void);
+void init_to_setup_init(void);
+void setup_init_to_setup_load(void);
+void setup_load_to_setup_count(void);
+void setup_count_to_setup_end(void);
 void ready_to_running(void);
 void running_to_finished(void);
 
-// Core
+// Arduino function called on RESET
 void setup()
 {
   Data.current_state = STATE_INIT;
@@ -113,6 +122,7 @@ void setup()
   delay(500);
 }
 
+// Arduino function called periodically
 void loop()
 {
   switch ( Data.current_state )
@@ -122,7 +132,7 @@ void loop()
       display_message("init", 2000);
       if ( start_sw_state() )
       {
-        init_to_setup();
+        init_to_setup_init();
       }
       else
       {
@@ -131,37 +141,77 @@ void loop()
     }
     break;
 
-    case STATE_READY :
+    case STATE_SETUP_INIT :
     {
-        if ( read_start_sw() )
+        if ( start_sw_state() )
         {
-          ready_to_running();
+          setup_init_to_setup_load();
+        }
+    }
+    break;
+
+    case STATE_SETUP_LOAD :
+    {
+        if ( millis() >= (setup_load_time_ms+setup_load_start_ms) )
+        {
+          setup_load_to_setup_count();
         }
         delay(100);
+    }
+    break;
+
+    case STATE_SETUP_COUNT :
+    {
+      display_score();
+      read_energy();
+      if ( read_start_sw() )
+      {
+        setup_count_to_setup_end();
+      }
+      delay(100);
+    }
+    break;
+
+    case STATE_SETUP_END :
+    {
+      Serial.print("Setup_score\n\tadc="); Serial.println(Data.score);
+      //Serial.print("\Setup_K="); Serial.println(delta_t_ms);
+      // TODO : save score factor in EEPROM
+      delay(5000);
+    }
+    break;
+
+    case STATE_READY :
+    {
+      if ( read_start_sw() )
+      {
+        ready_to_running();
+      }
+      delay(100);
     }
     break;
 
     case STATE_RUNNING :
     {
-        update_match_timer();
-        display_score();
-        read_energy();
-        update_source_activation();
-        if ( read_start_sw() || is_match_finished() )
-        {
-            running_to_finished();
-        }
-        delay(100);
+      update_match_timer();
+      display_score();
+      read_energy();
+      update_source_activation();
+      if ( read_start_sw() || is_match_finished() )
+      {
+        running_to_finished();
+      }
+      delay(100);
     }
     break;
 
     case STATE_FINISHED:
     {
-        if ( read_start_sw() )
-        {
-          running_to_finished();
-        }
-        delay(100);
+      if ( read_start_sw() )
+      {
+        running_to_finished();
+      }
+      delay(100);
     }
     break;
 
@@ -173,8 +223,7 @@ void loop()
 
 // Transitions functions
 
-/** Make the transition from STATE_INIT to STATE_READY
-*/
+/// Make the transition from STATE_INIT to STATE_READY
 void init_to_ready()
 {
   Data.current_state = STATE_READY;
@@ -182,15 +231,37 @@ void init_to_ready()
   Serial.print("Ready");
 }
 
-void init_to_setup(void)
+/// Makes transition from STATE_INIT to STATE_SETUP_INIT
+void init_to_setup_init(void)
 {
-  Data.current_state = STATE_SETUP;
-  display_message("SET ");
-  Serial.print("Setup");
+  Data.current_state = STATE_SETUP_INIT;
+  display_message("plug", 2000);
+  Serial.print("Setup - INIT");
 }
 
-/** Make the transition from STATE_READY to STATE_RUNNING
-*/
+/// Makes transition from STATE_SETUP_INIT to STATE_SETUP_LOAD
+void setup_init_to_setup_load(void)
+{
+  Data.current_state = STATE_SETUP_LOAD;
+  display_message("load");
+  setup_load_start_ms = millis();
+  digitalWrite(PIN_OUT_SRC_FAST, HIGH);
+}
+
+/// Makes transition from STATE_SETUP_LOAD to STATE_SETUP_COUNT
+void setup_load_to_setup_count(void)
+{
+  Data.current_state = STATE_SETUP_COUNT;
+  digitalWrite(PIN_OUT_SRC_FAST, LOW);
+}
+
+/// Makes transition from STATE_SETUP_COUNT to STATE_SETUP_END
+void setup_count_to_setup_end(void)
+{
+  Data.current_state = STATE_SETUP_END;
+}
+
+/// Make the transition from STATE_READY to STATE_RUNNING
 void ready_to_running(void)
 {
   Data.current_state = STATE_RUNNING;
