@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/rrossi/Bureau/MYRT/make_your_robot_tick.git/src/elec/myrt.sch)
-    (date "ven. 14 sept. 2018 10:37:29 CEST")
+    (date "lun. 17 sept. 2018 14:54:39 CEST")
     (tool "Eeschema 5.0.0-fee4fd1~66~ubuntu16.04.1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
