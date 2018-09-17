@@ -37,6 +37,7 @@ typedef struct globals_s {
   uint32_t score;
   uint32_t match_start_time_ms;
   uint32_t current_match_time_ms;
+  uint32_t score_divider;
 } data;
 
 // Constants
@@ -80,6 +81,8 @@ void setup()
 {
   Data.current_state = STATE_INIT;
   Data.score = 0;
+  // TODO load score_divider from EEPROM
+  Data.score_divider = 3639306/500;
 
   // Init GPIO
   pinMode(PIN_IN_START_SW, INPUT_PULLUP);
@@ -174,9 +177,8 @@ void loop()
 
     case STATE_SETUP_END :
     {
-      Serial.print("Setup_score\n\tadc="); Serial.println(Data.score);
-      //Serial.print("\Setup_K="); Serial.println(delta_t_ms);
-      // TODO : save score factor in EEPROM
+      Serial.print("Final_score = "); Serial.println(Data.score);
+      Serial.print("Score_divider = "); Serial.println(Data.score_divider);
       delay(5000);
     }
     break;
@@ -235,6 +237,8 @@ void init_to_ready()
 void init_to_setup_init(void)
 {
   Data.current_state = STATE_SETUP_INIT;
+  led_display.print(Data.score_divider);
+  delay(2000);
   display_message("plug", 2000);
   Serial.print("Setup - INIT");
 }
@@ -259,6 +263,8 @@ void setup_load_to_setup_count(void)
 void setup_count_to_setup_end(void)
 {
   Data.current_state = STATE_SETUP_END;
+  Data.score_divider = Data.score / setup_max_score;
+  // TODO save score_divider to EEPROM
 }
 
 /// Make the transition from STATE_READY to STATE_RUNNING
@@ -293,7 +299,7 @@ void running_to_finished(void)
 void display_score(bool force)
 {
   static uint32_t previous_score = -1;
-  const uint32_t new_score = Data.score / 1000;
+  const uint32_t new_score = Data.score / Data.score_divider;
   if ( (new_score != previous_score) || (force) ) {
     previous_score = new_score;
     if ( previous_score <= 9999 ){
