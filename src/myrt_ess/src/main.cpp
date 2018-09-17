@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
+#include <EEPROM.h>
 
 // Types, enums and structures definitions
 typedef enum pins_e {
@@ -37,10 +38,16 @@ typedef struct globals_s {
   uint32_t score;
   uint32_t match_start_time_ms;
   uint32_t current_match_time_ms;
-  uint32_t score_divider;
+
 } data;
 
+typedef struct calibration_data_s {
+    uint8_t crc; // always first byte
+    uint32_t score_divider;
+} calibration_data;
+
 // Constants
+const uint16_t eeprom_data_addr = 0;
 const uint32_t match_duration_ms = 5ul*60ul*1000ul;
 
 const uint32_t time_slot_duration_ms = 15000; // 15 s = 15000 ms
@@ -55,9 +62,13 @@ const uint32_t setup_max_score = 500;
 // Variables
 data Data;
 SoftwareSerial led_display(0, PIN_OUT_DISPLAY_UART);
+calibration_data Calibration_data;
 uint32_t setup_load_start_ms;
 
 // Prototypes
+bool load_calibration_data(void);
+void store_calibration_data(void);
+uint8_t calibration_data_crc(void);
 void display_score(bool force = false);
 void display_message(const char * msg, uint16_t delay_ms=0);
 void read_energy(void);
@@ -81,8 +92,6 @@ void setup()
 {
   Data.current_state = STATE_INIT;
   Data.score = 0;
-  // TODO load score_divider from EEPROM
-  Data.score_divider = 3639306/500;
 
   // Init GPIO
   pinMode(PIN_IN_START_SW, INPUT_PULLUP);
@@ -122,6 +131,12 @@ void setup()
   led_display.write(0x76); // Clear
   led_display.write(0x79); // Move cursor
   led_display.write("\0"); // .. to position 0
+
+  if ( ! load_calibration_data() )
+  {
+    init_to_setup_init();
+  }
+
   delay(500);
 }
 
@@ -178,7 +193,7 @@ void loop()
     case STATE_SETUP_END :
     {
       Serial.print("Final_score = "); Serial.println(Data.score);
-      Serial.print("Score_divider = "); Serial.println(Data.score_divider);
+      Serial.print("Score_divider = "); Serial.println(Calibration_data.score_divider);
       delay(5000);
     }
     break;
@@ -237,7 +252,7 @@ void init_to_ready()
 void init_to_setup_init(void)
 {
   Data.current_state = STATE_SETUP_INIT;
-  led_display.print(Data.score_divider);
+  led_display.print(Calibration_data.score_divider);
   delay(2000);
   display_message("plug", 2000);
   Serial.print("Setup - INIT");
@@ -263,8 +278,9 @@ void setup_load_to_setup_count(void)
 void setup_count_to_setup_end(void)
 {
   Data.current_state = STATE_SETUP_END;
-  Data.score_divider = Data.score / setup_max_score;
-  // TODO save score_divider to EEPROM
+  Calibration_data.score_divider = Data.score / setup_max_score;
+  led_display.print(Calibration_data.score_divider);
+  store_calibration_data();
 }
 
 /// Make the transition from STATE_READY to STATE_RUNNING
@@ -299,20 +315,20 @@ void running_to_finished(void)
 void display_score(bool force)
 {
   static uint32_t previous_score = -1;
-  const uint32_t new_score = Data.score / Data.score_divider;
+  uint32_t new_score = Data.score / Calibration_data.score_divider;
   if ( (new_score != previous_score) || (force) ) {
     previous_score = new_score;
-    if ( previous_score <= 9999 ){
-      if ( previous_score < 1000 )
-        led_display.write("0");
-      if ( previous_score < 100 )
-        led_display.write("0");
-      if ( previous_score < 10 )
-        led_display.write("0");
-      led_display.print(new_score);
-    } else {
-      led_display.print("OUFL");
+    while ( new_score >= 10000 )
+    {
+      new_score /= 10;
     }
+    if ( new_score < 1000 )
+      led_display.write("0");
+    if ( new_score < 100 )
+      led_display.write("0");
+    if ( new_score < 10 )
+      led_display.write("0");
+    led_display.print(new_score);
   }
 }
 
@@ -417,4 +433,43 @@ bool is_match_finished(void)
     return true;
   }
   return false;
+}
+
+/** Read calibration constants from EEPROM
+*/
+bool load_calibration_data(void)
+{
+  EEPROM.get(eeprom_data_addr, Calibration_data);
+  uint8_t sum = 0;
+  for ( uint8_t i = eeprom_data_addr+1 /*skip crc*/; i < sizeof(calibration_data); i++)
+  {
+    sum += EEPROM[i];
+  }
+  if ( sum != Calibration_data.crc )
+  {
+    return false;
+  }
+  return true;
+}
+
+/** Save calibration constants to EEPROM if needed
+*/
+void store_calibration_data(void)
+{
+  Calibration_data.crc = calibration_data_crc();
+  EEPROM.put(eeprom_data_addr, Calibration_data);
+}
+
+/** Process a basic checksum of the Calibration_data structure
+*/
+uint8_t calibration_data_crc(void)
+{
+  uint8_t * p = (&(Calibration_data.crc))+1; //+1 to skip the CRC field
+  uint8_t sum = 0;
+  for ( uint8_t i = 0; i < sizeof(Calibration_data)-1; i++ )
+  {
+    sum += *p;
+    p++;
+  }
+  return sum;
 }
