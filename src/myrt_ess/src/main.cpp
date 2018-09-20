@@ -440,13 +440,9 @@ bool is_match_finished(void)
 bool load_calibration_data(void)
 {
   EEPROM.get(eeprom_data_addr, Calibration_data);
-  uint8_t sum = 0;
-  for ( uint8_t i = eeprom_data_addr+1 /*skip crc*/; i < sizeof(calibration_data); i++)
+  if ( Calibration_data.crc != calibration_data_crc() )
   {
-    sum += EEPROM[i];
-  }
-  if ( sum != Calibration_data.crc )
-  {
+    Calibration_data.score_divider = 1;
     return false;
   }
   return true;
