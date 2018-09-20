@@ -78,6 +78,7 @@ uint8_t read_start_sw(void);
 void start_match_timer(void);
 void update_match_timer(void);
 bool is_match_finished(void);
+void reset_led_display(void);
 
 void init_to_ready(void);
 void init_to_setup_init(void);
@@ -252,6 +253,7 @@ void init_to_ready()
 void init_to_setup_init(void)
 {
   Data.current_state = STATE_SETUP_INIT;
+  reset_led_display();
   led_display.print(Calibration_data.score_divider);
   delay(2000);
   display_message("plug", 2000);
@@ -468,4 +470,22 @@ uint8_t calibration_data_crc(void)
     p++;
   }
   return sum;
+}
+
+void reset_led_display(void)
+{
+  uint32_t baudRates[] = {2400ul, 4800ul, 9600ul, 14400ul, 19200ul, 38400ul, 57600ul, 76800ul, 115200ul, 250000ul, 500000ul, 1000000ul};
+  Serial.println("reset display");
+  for (size_t i=0; i < sizeof(baudRates)/sizeof(uint32_t); i++)
+  {
+    led_display.begin(baudRates[i]);  // Set new baud rate
+    Serial.print("baud ");Serial.println(i);
+    delay(100);
+    led_display.write(0x81);  // Send factory reset command
+  }
+
+  led_display.begin(9600);
+  delay(100);  // Arduino needs a moment to setup serial
+  led_display.write(0x76);  // Clear the display
+  led_display.print("test");
 }
