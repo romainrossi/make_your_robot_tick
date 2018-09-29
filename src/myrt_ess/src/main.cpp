@@ -148,7 +148,7 @@ void loop()
   {
     case STATE_INIT:
     {
-      display_message("init", 2000);
+      display_message(" Init", 2000); // space because screen seems eat the first char received
       if ( start_sw_state() )
       {
         init_to_setup_init();
