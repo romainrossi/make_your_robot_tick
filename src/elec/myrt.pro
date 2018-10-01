@@ -1,4 +1,4 @@
-update=lun. 27 août 2018 15:10:13 CEST
+update=lun. 01 oct. 2018 15:12:52 CEST
 version=1
 last_client=kicad
 [cvpcb]
@@ -28,3 +28,13 @@ ModuleOutlineThickness=0.15
 [eeschema]
 version=1
 LibDir=
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=pdf/
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=50
+ERC_TestSimilarLabels=1
